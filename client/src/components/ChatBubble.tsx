@@ -1,15 +1,11 @@
 import React from "react";
 import { Avatar, Paper, Box, Typography } from "@mui/material";
+import { Message } from "../App"
 
 // You can replace this with an actual image import
 // import profileImage from "../assets/profile.jpg";
 
-interface ChatBubbleProps {
-  message: string;
-  sender: "user" | "bot";
-}
-
-const ChatBubble = ({message, sender}: ChatBubbleProps) => {
+const ChatBubble = ({text, sender}: Message) => {
   return (
     <Box sx={{ display: "flex", justifyContent: sender === "user" ? "flex-end" : "flex-start" }}>
       {sender === "bot" && (
@@ -27,7 +23,7 @@ const ChatBubble = ({message, sender}: ChatBubbleProps) => {
           color: sender === "user" ? "white" : "black",
         }}
       >
-        <Typography variant="body1">{message}</Typography>
+        <Typography variant="body1">{text}</Typography>
       </Paper>
     </Box>
   );

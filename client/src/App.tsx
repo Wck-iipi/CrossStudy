@@ -6,29 +6,45 @@ import ChatBubble from "./components/ChatBubble";
 import ChatInput from "./components/ChatInput";
 import { generateBotResponse, handleUserMessage } from "./utils/chatFunctions";
 
-interface Message {
+// EVERY MESSAGE MUST BE FROM USER OR BOT
+export interface Message {
   text: string;
   sender: "user" | "bot";
 }
 
+// TODO set history
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   // Function to handle user input
-  const sendMessage = (input: string) => {
+  const sendMessage = async (input: string) => {
     const userMessage = handleUserMessage(input);
 
     // Add user message (right-side bubble)
     setMessages((prevMessages) => [...prevMessages, { text: userMessage, sender: "user" }]);
 
-    // Simulate bot response after 1 second
-    setTimeout(() => {
-      const botMessage = generateBotResponse(userMessage);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: botMessage, sender: "bot" },
-      ]);
-    }, 1000);
+    try {
+      const response = await fetch('http://localhost:3000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const botMessage = data.message; // Assuming the server sends back { message: "bot's response" }
+
+      setMessages((prevMessages) => [...prevMessages, { text: botMessage, sender: "bot" }]);
+
+    } catch (error) {
+      console.error('Error getting bot response:', error);
+      // You might want to display an error message to the user here
+    }
   };
 
   return (
@@ -46,7 +62,7 @@ const App: React.FC = () => {
         {/* Chat Area */}
         <Box sx={{ height: "70vh", overflowY: "auto", display: "flex", flexDirection: "column", gap: "20px" }}>
           {messages.map((message, index) => (
-            <ChatBubble key={index} message={message.text} sender={message.sender} />
+            <ChatBubble key={index} text={message.text} sender={message.sender} />
           ))}
         </Box>
 
