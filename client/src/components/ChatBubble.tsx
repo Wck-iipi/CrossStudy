@@ -1,30 +1,33 @@
-import React from "react";
-import { Avatar, Paper, Box, Typography } from "@mui/material";
-import { Message } from "../App"
+import React from 'react';
+import { Box, Typography } from "@mui/material";
+import { Message } from '../App';
 
-// You can replace this with an actual image import
-// import profileImage from "../assets/profile.jpg";
 
-const ChatBubble = ({text, sender}: Message) => {
+const ChatBubble: React.FC<Message> = ({ sender, text }) => { 
+  const position = sender === 'bot' ? 'left' : 'right'; // Determine position based on sender
+
   return (
-    <Box sx={{ display: "flex", justifyContent: sender === "user" ? "flex-end" : "flex-start" }}>
-      {sender === "bot" && (
-        <Avatar
-          src="https://images.edrawmind.com/article/socrates-biography-philosophy-facts-mind-maps/socrate800.jpg"
-          sx={{ width: 40, height: 40, marginRight: "10px" }}
-        />
-      )}
-      <Paper
-        sx={{
-          padding: "15px",
-          maxWidth: "300px",
-          borderRadius: "15px",
-          backgroundColor: sender === "user" ? "#4CAF50" : "white",
-          color: sender === "user" ? "white" : "black",
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        justifyContent: position === 'left' ? 'flex-start' : 'flex-end',
+        marginBottom: '10px',
+      }}
+    >
+      <Box 
+        sx={{ 
+          backgroundColor: position === 'left' ? '#333' : '#007aff', 
+          color: 'white', 
+          padding: '10px', 
+          borderRadius: '10px', 
+          maxWidth: '60%',
+          boxShadow: '0px 4px 10px rgba(0,0,0,0.1)',
         }}
       >
-        <Typography variant="body1">{text}</Typography>
-      </Paper>
+        <Typography variant="body1">
+          {text}
+        </Typography>
+      </Box>
     </Box>
   );
 };

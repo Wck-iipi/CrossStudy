@@ -1,50 +1,88 @@
-import React, { useState } from "react";
-import { Paper, InputBase, IconButton } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import React, { useState } from 'react';
+import { Box, TextField, IconButton } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import MicIcon from '@mui/icons-material/Mic';
 
-type OnSendMessage = (input: string) => void;
-
-interface ChatInputProps {
-  onSendMessage: OnSendMessage; 
-}
-
-const ChatInput = ({ onSendMessage }: ChatInputProps) => {
-  const [inputMessage, setInputMessage] = useState("");
+const ChatInput: React.FC = () => {
+  const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {
-    if (inputMessage.trim() !== "") {
-      onSendMessage(String(inputMessage)); // Convert to string if not already
-      setInputMessage(""); // Clear input field
+    if (message.trim()) {
+      console.log('User message:', message);
+      setMessage('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
     }
   };
 
   return (
-    <Paper
+    <Box
       sx={{
-        marginTop: "auto",
-        padding: "10px 20px",
-        backgroundColor: "#333",
-        display: "flex",
-        alignItems: "center",
-        borderRadius: "20px",
-        position: "fixed",
-        bottom: "10px",
-        width: "80%",
-        left: "11%",
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: '#1C1C1C',  // Set the background color of the input area to match the chat area
+        padding: '10px',
+        width: '100%',
+        borderTop: '1px solid #4b4b4b',
+        boxSizing: 'border-box',
+        position: 'fixed',  // Stick the input to the bottom of the page
+        bottom: 0,
+        left: 0,
+        zIndex: 1000,
       }}
     >
-      <InputBase
-        value={inputMessage}
-        onChange={(e) => setInputMessage(e.target.value)}
-        placeholder="Type a message..."
-        sx={{ flexGrow: 1, color: "white" }}
-        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-      />
-      <IconButton onClick={handleSendMessage}>
-        <SendIcon sx={{ color: "white" }} />
+      {/* Attach Button on the left */}
+      <IconButton sx={{ color: '#fff' }}>
+        <AttachFileIcon />
       </IconButton>
-    </Paper>
+
+      {/* Input Field */}
+      <TextField
+        variant="outlined"
+        placeholder="Type a message..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress}
+        sx={{
+          backgroundColor: '#1C1C1C',
+          color: '#fff',
+          borderRadius: '50px',
+          flexGrow: 1,
+          marginRight: '10px',
+          input: {
+            color: '#fff', // Make sure the text is white
+          },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#fff', // Set the border color to white
+            },
+            '&:hover fieldset': {
+              borderColor: '#fff',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#fff',
+            },
+          },
+        }}
+      />
+
+      {/* Mic Button */}
+      <IconButton sx={{ color: '#fff' }}>
+        <MicIcon />
+      </IconButton>
+
+      {/* Send Button */}
+      <IconButton sx={{ color: '#fff' }} onClick={handleSendMessage}>
+        <SendIcon />
+      </IconButton>
+    </Box>
   );
 };
 
 export default ChatInput;
+
